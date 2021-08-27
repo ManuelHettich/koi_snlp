@@ -4,8 +4,8 @@
 
 Required Python Libraries:
 ```
-Keras==2.4.3
-numpy==1.19.2
-pandas==1.1.3
+numpy==1.21.2
+pandas==1.3.2
+tensorflow==2.6.0
 transformers==4.9.2
 ```
