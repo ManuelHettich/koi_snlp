@@ -1,9 +1,8 @@
-from util import *
 from models import *
 from trainer import *
 from tasks import *
-from code.score_task_1 import score_task_1
-from code.score_task_2 import score_task_2
+from SS21.Project.benchmarks.duluth.src.code.score_task_1 import score_task_1
+from SS21.Project.benchmarks.duluth.src.code.score_task_2 import score_task_2
 
 
 def parse_args(cl_args):
