@@ -4,9 +4,10 @@
 
 Required Python Libraries:
 ```
+matplotlib==3.4.3
 numpy==1.19.5
 pandas==1.3.2
-setuptools=57.4.0
-tensorflow==2.6.0
+setuptools==57.4.0
+torch==1.9.0
 transformers==4.9.2
 ```

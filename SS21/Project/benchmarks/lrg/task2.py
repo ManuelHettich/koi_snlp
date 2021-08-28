@@ -1,19 +1,15 @@
 # IMPORTS
-import pandas as pd
-import numpy as np
 import re
-import os
-import random
-import time
+
+import numpy as np
+import pandas as pd
 import torch
-from torch import nn
-from torch.utils.data import Dataset, DataLoader
 import transformers
-import matplotlib.pyplot as plt
+from torch.utils.data import Dataset, DataLoader
 
 # CONFIG
 SAVE_PATH = "./"
-LOAD_LM = True
+LOAD_LM = False
 
 # SEED
 seed_val = 1234
