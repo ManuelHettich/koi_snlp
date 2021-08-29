@@ -23,6 +23,8 @@ loaded fine-tuned model will be compared to the ground-truth:
 
 `$ python3 test.py`
 
+The fine-tuned model can be found here: [Link](https://uni-bielefeld.sciebo.de/s/2gb0amFEwcBFVGn)
+
 Required Python Libraries:
 
 ```
