@@ -14,8 +14,7 @@ TEST_FILE_2 = "./data/subtask-2/test.csv"
 
 if __name__ == "__main__":
     tokenizer = transformers.RobertaTokenizer.from_pretrained(MODEL_NAME)
-    original_sentence_1, edited_sentence_1, original_sentence_2, edited_sentence_2, label = extract_example(
-        tokenizer, seed=1)
+    original_sentence_1, edited_sentence_1, original_sentence_2, edited_sentence_2, label = extract_example(seed=1)
 
     print("#### Example from Humicroedit dataset for subtask-2 ####")
     print("Original headline #1: ", original_sentence_1)
