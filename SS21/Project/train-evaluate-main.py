@@ -3,7 +3,6 @@
 @author: Manuel Hettich
 """
 
-import datasets
 import numpy as np
 import pandas as pd
 import torch
@@ -28,35 +27,6 @@ MODEL_PATH = "./roberta-retrained"
 TRAINED_MODEL_PATH = "./roberta-trained"
 
 
-class RMSE(datasets.Metric):
-    def _info(self):
-        return datasets.MetricInfo(
-            description="RMSE",
-            citation="",
-            inputs_description="",
-            features=datasets.Features(
-                {
-                    "predictions": datasets.Sequence(datasets.Value("float32")),
-                    "references": datasets.Sequence(datasets.Value("float32")),
-                }
-                if self.config_name == "multilabel"
-                else {
-                    "predictions": datasets.Value("float32"),
-                    "references": datasets.Value("float32"),
-                }
-            ),
-            reference_urls=[""],
-        )
-
-    def _compute(self, *, predictions=None, references=None, **kwargs):
-        if isinstance(predictions, torch.Tensor):
-            predictions = predictions.item()
-        loss = torch.nn.MSELoss()
-        return {
-            "RMSE": torch.sqrt(loss(predictions, references))
-        }
-
-
 def predict(df: pd.DataFrame, model, batch_size=16):
     preds = []
     for idx in np.arange(0, df[0].shape[0] // batch_size):
@@ -68,6 +38,8 @@ def predict(df: pd.DataFrame, model, batch_size=16):
         logits = outputs["logits"]
         for logit in logits.reshape(-1):
             preds.append(logit.item())
+
+        print(f"Batch ({idx}/{df[0].shape[0] // batch_size})")
 
     return preds
 
@@ -113,30 +85,31 @@ if __name__ == "__main__":
         trainer.save_model(MODEL_PATH)
         torch.save(model.state_dict(), MODEL_PATH + "/task1.pt")
 
-    tokenized_df_1, tokenized_df_2, labels = preprocess_data(tokenizer, "subtask-2", TEST_FILE_2)
+    tokenized_df_1, tokenized_df_2, labels, ids = preprocess_data(tokenizer, "subtask-2", TEST_FILE_2)
     model = transformers.RobertaForSequenceClassification.from_pretrained(TRAINED_MODEL_PATH)
-    model.load_state_dict(torch.load('./roberta-trained/task1.pt'))
+    # model.load_state_dict(torch.load('./roberta-trained/task1.pt'))
     model.eval()
 
-    preds1 = predict(tokenized_df_1, model, batch_size=BATCH_SIZE)
-    preds2 = predict(tokenized_df_2, model, batch_size=BATCH_SIZE)
+    results_df = pd.DataFrame(columns=["id", "label", "pred1", "pred2", "pred_total"])
+    results_df["id"] = ids
+    results_df["label"] = labels
 
-    preds = []
+    preds1 = predict(tokenized_df_1, model, batch_size=BATCH_SIZE)
+    results_df["pred1"] = preds1
+    preds2 = predict(tokenized_df_2, model, batch_size=BATCH_SIZE)
+    results_df["pred2"] = preds2
+
+    preds_total = []
     for idx in range(len(preds1)):
         if preds1[idx] > preds2[idx]:
-            preds.append(1)
+            preds_total.append(1)
         elif preds1[idx] < preds2[idx]:
-            preds.append(2)
+            preds_total.append(2)
         else:
-            preds.append(0)
+            preds_total.append(0)
 
-    accuracy = calc_accuracy(preds, labels)
+    accuracy = calc_accuracy(preds_total, labels)
     print(accuracy)
 
-    inputs = tokenized_df_1[0][:5]
-    attention_masks = tokenized_df_1[1][:5]
-    labels = tokenized_df_1[2][:5]
-    outputs = model(input_ids=inputs, attention_mask=attention_masks, labels=labels)
-
-    # predictions = trainer.predict(tokenized_datasets["validation"], )
-    # print(predictions.predictions.shape, predictions.label_ids.shape)
+    results_df["pred_total"] = preds_total
+    results_df.to_csv(TRAINED_MODEL_PATH + "/predictions.csv", index=False)
