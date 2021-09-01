@@ -16,14 +16,15 @@ train-evaluate-main.py and the following command:
 You can skip the fine-tuning part by setting the same global variable TRAIN=False and running the same command. In this
 case, only the calculation of the final accuracy value will be executed (warning: can take a very long time). The
 fine-tuned model for this part is expected to be stored in the local folder `./roberta-trained`
-The full Humicroedit dataset is expected to be stored in the local folder `./data`
+The full Humicroedit dataset is expected to be stored in the local folder `./data` s.t. the test dataset for subtask 2 
+can be found at `./data/subtask-2/test.csv`.
 
 By running the following command, a specific example will be taken from the test dataset and the prediction of the
 loaded fine-tuned model will be compared to the ground-truth:
 
 `$ python3 test.py`
 
-The fine-tuned model can be found here: [Link](https://uni-bielefeld.sciebo.de/s/2gb0amFEwcBFVGn)
+The fine-tuned model can be found here since the file size was too big for the LernraumPlus: [Link](https://uni-bielefeld.sciebo.de/s/2gb0amFEwcBFVGn)
 
 Required Python Libraries:
 
